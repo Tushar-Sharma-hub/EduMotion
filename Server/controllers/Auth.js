@@ -7,6 +7,42 @@ const jwt = require('jsonwebtoken');
 const mailSender=require('../util/mailSender');
 require("dotenv").config();
 
+//Otp generation and updating otp document in database.
+exports.sendOtp = async (req, res) => {
+    try{
+        const { email } = req.body;
+
+        // Check if the user with the provided email already exists
+        const existingUser = await User.findOne({ email });
+        if(existingUser){
+            return res.status(401).json({ message: "User with this email already exists." });
+        }
+        // Generate a 6-digit OTP
+        let otp = otpGenerator.generate(6, { upperCase: false, lowercase: false, specialChars: false });
+        console.log("Generated OTP:", otp);
+
+        // Check unique otp or not.
+        let existingOtp = await Otp.findOne({ otp });
+        while(existingOtp){
+            otp = otpGenerator.generate(6, { upperCase: false, lowercase: false, specialChars: false });
+            existingOtp = await Otp.findOne({ otp });
+        }
+
+        // Create a new OTP document and save it to the database
+        const otpPayload = { email, otp };
+        const otpBody = await Otp.create(otpPayload);
+        //jb ye create krenge humne premiddleware use kiya hai otp model me to ye otp create hone se pehle hi email bhej dega user ko. 
+        //aur jab otp document database me save ho jayega tabhi response bhejenge user ko ki otp sent successfully.
+        console.log("OTP document created successfully:", otpBody);
+
+        return res.status(200).json({ success: true, message: "OTP sent successfully to your email." });
+
+    } catch (error) {
+        console.error("Error occurred while sending OTP:", error);
+        return res.status(500).json({ success: false, message: "Internal server error." });
+    }
+}
+
 //signup
 exports.signup = async (req, res) => {
     try{
@@ -70,42 +106,6 @@ exports.signup = async (req, res) => {
     }
 }
 
-//Otp generation and updating otp document in database.
-exports.sendOtp = async (req, res) => {
-    try{
-        const { email } = req.body;
-
-        // Check if the user with the provided email already exists
-        const existingUser = await User.findOne({ email });
-        if(existingUser){
-            return res.status(401).json({ message: "User with this email already exists." });
-        }
-        // Generate a 6-digit OTP
-        const otp = otpGenerator.generate(6, { upperCase: false, lowercase: false, specialChars: false });
-        console.log("Generated OTP:", otp);
-
-        // Check unique otp or not.
-        const existingOtp = await Otp.findOne({ otp });
-        while(existingOtp){
-            otp = otpGenerator.generate(6, { upperCase: false, lowercase: false, specialChars: false });
-            existingOtp = await Otp.findOne({ otp });
-        }
-
-        // Create a new OTP document and save it to the database
-        const otpPayload = { email, otp };
-        const otpBody = await Otp.create(otpPayload);
-        //jb ye create krenge humne premiddleware use kiya hai otp model me to ye otp create hone se pehle hi email bhej dega user ko. 
-        //aur jab otp document database me save ho jayega tabhi response bhejenge user ko ki otp sent successfully.
-        console.log("OTP document created successfully:", otpBody);
-
-        return res.status(200).json({ success: true, message: "OTP sent successfully to your email." });
-
-    } catch (error) {
-        console.error("Error occurred while sending OTP:", error);
-        return res.status(500).json({ success: false, message: "Internal server error." });
-    }
-}
-
 //login
 exports.login = async (req, res) => {
     try{
@@ -153,13 +153,11 @@ exports.login = async (req, res) => {
 //change password
 exports.changePassword=async(req,res)=>{
     try {
-		 
 		const userDetails = await User.findById(req.user.id);
-    //get data from req body
-     //get oldPassword,newPassword,confirmNewPassword
+        //get oldPassword,newPassword,confirmNewPassword
 		const { oldPassword, newPassword, confirmNewPassword } = req.body;
 
-    //Validation
+        //Validation
 		const isPasswordMatch = await bcrypt.compare(
 			oldPassword,
 			userDetails.password
