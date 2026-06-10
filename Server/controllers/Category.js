@@ -4,9 +4,7 @@ exports.createCategory = async (req, res) => {
 	try {
 		const { name, description } = req.body;
 		if (!name) {
-			return res
-				.status(400)
-				.json({ success: false, message: "All fields are required" });
+			return res.status(400).json({ success: false, message: "All fields are required" });
 		}
 		const CategorysDetails = await Category.create({
 			name: name,

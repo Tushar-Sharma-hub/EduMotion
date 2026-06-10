@@ -1,5 +1,5 @@
 const Course=require("../models/Course");
-const Tag = require("../models/Category");
+const Category = require("../models/Category");
 const User= require("../models/User");
 const {uploadImageToCloudinary}=require("../util/imageUploader");
 
@@ -7,11 +7,11 @@ const {uploadImageToCloudinary}=require("../util/imageUploader");
 exports.createCourse=async(req,res)=>{
     try{
         //fetch data
-        const {courseName,courseDescription,whatYouWillLearn,price,tag}=req.body; //here tag is object id as we are passing it by objectId in course model.
+        const {courseName,courseDescription,whatYouWillLearn,price,category}=req.body; //category is object id as we are passing it by objectId in course model.
         //get thumbnail
         const thumbnail=req.files.thumbnailImage;
         //validation
-        if(!courseName || !courseDescription || !whatYouWillLearn || !tag || !price || !thumbnail){
+        if(!courseName || !courseDescription || !whatYouWillLearn || !category || !price || !thumbnail){
             return res.status(400).json({
                 success:false,
                 message:"All fields are required."
@@ -29,12 +29,12 @@ exports.createCourse=async(req,res)=>{
             })
         }
 
-        //check given tag valid or not
-        const tagDetails=await Tag.findById(tag);
-        if(!tagDetails){
+        //check given category valid or not
+        const categoryDetails=await Category.findById(category);
+        if(!categoryDetails){
             return res.status(404).json({
                 success:false,
-                mesaage:"Tag details not found.",
+                mesaage:"Category details not found.",
             })
         }
 
@@ -47,7 +47,7 @@ exports.createCourse=async(req,res)=>{
             courseDescription,
             instructor: instructorDetails._id,
             price,
-            tag:tagDetails._id,
+            category:categoryDetails._id,
             thumbnail:thumbnailImage.secure_url,
         })
 
@@ -62,16 +62,24 @@ exports.createCourse=async(req,res)=>{
             {new:true},
         )
 
-        //Update the tag ka schema
-
+        //Update the category schema
+        await Category.findByIdAndUpdate(
+            { _id: category },
+            {
+                $push: {
+                courses: newCourse._id,
+                },
+            },
+            { new: true }
+        )
 
         //return response
-        return res.staus(200).json({
+        return res.status(200).json({
             success:true,
             message:"Course created successfully.",
         });
     }catch(error){
-        return res.staus(500).json({
+        return res.status(500).json({
             success:false,
             message:"Failed to create course",
             error:error.message,
@@ -90,12 +98,12 @@ exports.showAllCourses=async(req,res)=>{
             ratingAndReviews:true,
             studentsEnrolled:true,
         }).populate("instructor").exec();
-        return res.staus(200).json({
+        return res.status(200).json({
             success:true,
             message:"Courses Data fetched successfully.",
         });
     }catch(error){
-        return res.staus(500).json({
+        return res.status(500).json({
             success:false,
             message:"Failed to create course",
             error:error.message,
