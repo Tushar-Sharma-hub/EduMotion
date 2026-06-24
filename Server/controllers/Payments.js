@@ -30,7 +30,7 @@ exports.capturePayment = async(req,res) => {
             });
         }
         //user already pay for the same course
-        const uid=new mongoose.Types.ObjectId(userId);
+        const uid=new mongoose.Types.ObjectId(userId); //convert userId to objectId type , as it is of string.So that we can compare it in studentsEnrolled in courses.
         if(course.studentsEnrolled.includes(uid)){
             return res.status(200).json({
                 success:false,
@@ -49,7 +49,7 @@ exports.capturePayment = async(req,res) => {
     const currency="INR";
 
     const options={
-        amount: amount*100,
+        amount: amount*100, //send * 100 amount for creating amount order.
         currency,
         receipt: Math.random(Date.now()).toString(),
         notes:{
@@ -83,7 +83,7 @@ exports.capturePayment = async(req,res) => {
 
 //verify signature of razorpay
 exports.verfiySignature = async(req,res)=>{
-    const webhookSecret="qwertyuiop";
+    const webhookSecret=process.env.WEBHOOK_SECRET;
 
     const signature=req.headers["x-razorpay-signature"];
 
