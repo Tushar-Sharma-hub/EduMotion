@@ -36,7 +36,7 @@ exports.resetPasswordToken=async(req,res)=>{
         console.log(error);
         return res.status(500).json({
             success:false,
-            message:"Something went wrong while sending the reset password link."
+            message:"Something fishy",
         })
     }
 }
@@ -54,7 +54,7 @@ exports.resetPassword = async(req,res)=>{
             });
         }
         //get user details from db using token
-        const userDetails=await user.findOne({token:token});
+        const userDetails=await User.findOne({token:token});
         //if no entry - invalid token
         if(!userDetails){
             return res.json({
@@ -70,7 +70,7 @@ exports.resetPassword = async(req,res)=>{
             });
         }
         //hash new password
-        const hashedPassword=bcrypt.hash(password,10);
+        const hashedPassword=await bcrypt.hash(password,10);
         //update new password
         await User.findOneAndUpdate(
             {token:token},

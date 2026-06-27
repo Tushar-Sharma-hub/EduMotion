@@ -23,11 +23,11 @@ exports.updateProfile = async (req, res) => {
     const userDetails = await User.findById(id)
     const profile = await Profile.findById(userDetails.additionalDetails)
 
-    const user = await User.findByIdAndUpdate(id, {
-      firstName,
-      lastName,
-    })
-    await user.save()
+    // const user = await User.findByIdAndUpdate(id, {
+    //   firstName,
+    //   lastName,
+    // })
+    // await user.save()
 
     // Update the profile fields
     profile.dateOfBirth = dateOfBirth
@@ -116,6 +116,9 @@ exports.getAllUserDetails = async (req, res) => {
 
 exports.updateDisplayPicture = async (req, res) => {
   try {
+    if (!req.files || !req.files.displayPicture) {
+      return res.status(400).json({ success: false, message: 'No displayPicture file provided' })
+    }
     const displayPicture = req.files.displayPicture
     const userId = req.user.id
     const image = await uploadToCloudinary(
@@ -124,7 +127,7 @@ exports.updateDisplayPicture = async (req, res) => {
       1000,
       1000
     )
-    console.log(image)
+    console.log('Cloudinary upload response:', image.secure_url)
     const updatedProfile = await User.findByIdAndUpdate(
       { _id: userId },
       { image: image.secure_url },
@@ -136,10 +139,8 @@ exports.updateDisplayPicture = async (req, res) => {
       data: updatedProfile,
     })
   } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    })
+    console.error('Error updating display picture:', error)
+    return res.status(500).json({ success: false, message: error.message || 'Cloudinary error' })
   }
 }
 
