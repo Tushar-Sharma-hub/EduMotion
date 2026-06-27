@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const User = reqire("../models/User");
+const User = require("../models/User");
 
 //auth
 exports.auth=async(req,res,next)=>{
@@ -28,12 +28,12 @@ exports.isStudent = async(req,res,next) => {
         if(req.user.accountType!="Student"){
             return res.status(401).json({
                 success:false,
-                message:"This is a protect route for student"
+                message:"This is a protected route for student"
             });
         }
         next();
     }catch(error){
-        return res.status(400).json({success:false , message:"User role can't be verfied , please try again."});
+        return res.status(400).json({success:false , message:"User role can't be verified , please try again."});
     }
 }
 
@@ -43,12 +43,12 @@ exports.isInstructor = async(req,res,next) => {
         if(req.user.accountType!="Instructor"){
             return res.status(401).json({
                 success:false,
-                message:"This is a protect route for Instructor"
+                message:"This is a protected route for Instructor"
             });
         }
         next();
     }catch(error){
-        return res.status(400).json({success:false , message:"User role can't be verfied , please try again."});
+        return res.status(400).json({success:false , message:"User role can't be verified , please try again."});
     }
 }
 
@@ -58,11 +58,11 @@ exports.isAdmin = async(req,res,next) => {
         if(req.user.accountType!="Admin"){
             return res.status(401).json({
                 success:false,
-                message:"This is a protect route for Admin"
+                message:"This is a protected route for Admin"
             });
         }
         next();
     }catch(error){
-        return res.status(400).json({success:false , message:"User role can't be verfied , please try again."});
+        return res.status(400).json({success:false , message:"User role can't be verified , please try again."});
     }
 }

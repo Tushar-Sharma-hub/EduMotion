@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const Otp = require('../models/Otp');
-const otpGenerator = require('otpGenerator');
-const profile = require('../models/Profile');
+const otpGenerator = require('otp-Generator');
+const Profile = require('../models/Profile');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const mailSender=require('../util/mailSender');
@@ -138,7 +138,7 @@ exports.login = async (req, res) => {
             expires: new Date(Date.now()+3*24*60*60*1000),
             httpOnly:true,
         }
-        res.cookies('token', token, options).status(200).json({
+        res.cookie('token', token, options).status(200).json({
             success:true,
             token,
             user,

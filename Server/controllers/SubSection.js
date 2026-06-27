@@ -3,7 +3,7 @@ const Section=require("../models/Section");
 const {uploadToCloudinary}=require("../util/fileUploader");
 
 //create Subsection
-exports.creeateSubSection = async(req,res)=>{
+exports.createSubSection = async(req,res)=>{
     try{
         //data fetch from req body
         const {sectionId,title,timeDuration,description}=req.body;
@@ -11,7 +11,7 @@ exports.creeateSubSection = async(req,res)=>{
         const video = req.files.videoFile;
         //validation
         if(!sectionId || !title || !timeDuration || !description || !video){
-            return res.staus(400).json({
+            return res.status(400).json({
                 success:false,
                 message:"All fields are required"
             });
@@ -69,7 +69,7 @@ exports.updateSubSection = async (req, res) => {
     }
     if (req.files && req.files.video !== undefined) {
       const video = req.files.video
-      const uploadDetails = await uploadImageToCloudinary(
+      const uploadDetails = await uploadToCloudinary(
         video,
         process.env.FOLDER_NAME
       )
@@ -101,40 +101,44 @@ exports.updateSubSection = async (req, res) => {
 }
 
 //delete subsection
-exports.deleteAccount = async (req, res) => {
+exports.deleteSubSection = async (req, res) => {
   try {
-    const id = req.user.id
-    console.log(id)
-    const user = await User.findById({ _id: id })
-    if (!user) {
-      return res.status(404).json({
+    const { sectionId, subSectionId } = req.body
+
+    if (!sectionId || !subSectionId) {
+      return res.status(400).json({
         success: false,
-        message: "User not found",
+        message: "sectionId and subSectionId are required",
       })
     }
-    // Delete Assosiated Profile with the User
-    await Profile.findByIdAndDelete({
-      _id: new mongoose.Types.ObjectId(user.additionalDetails),
-    })
-    for (const courseId of user.courses) {
-      await Course.findByIdAndUpdate( //unroll user from courses
-        courseId,
-        { $pull: { studentsEnroled: id } },
-        { new: true }
-      )
+
+    const subSection = await SubSection.findById(subSectionId)
+    if (!subSection) {
+      return res.status(404).json({
+        success: false,
+        message: "SubSection not found",
+      })
     }
-    // Now Delete User
-    await User.findByIdAndDelete({ _id: id })
-    res.status(200).json({
+
+    await SubSection.findByIdAndDelete(subSectionId)
+
+    await Section.findByIdAndUpdate(
+      sectionId,
+      { $pull: { subSection: subSectionId } },
+      { new: true }
+    )
+
+    return res.status(200).json({
       success: true,
-      message: "User deleted successfully",
+      message: "SubSection deleted successfully",
     })
-    await CourseProgress.deleteMany({ userId: id })
   } catch (error) {
-    console.log(error)
-    res
-      .status(500)
-      .json({ success: false, message: "User Cannot be deleted successfully" })
+    console.error("Error deleting sub-section:", error)
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    })
   }
 }
 
