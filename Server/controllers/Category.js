@@ -55,9 +55,9 @@ exports.categoryPageDetails = async(req,res) =>{
 			});
 		}
 		//get courses from different categories
-		const differentCategories = await Category.find({
+		const differentCategory = await Category.find({
 			_id: {$ne : categoryId},
-		}).populate("course").exec();
+		}).populate("courses").exec();
 		// Get top-selling courses across all categories
 		const allCategories = await Category.find()
 			.populate({

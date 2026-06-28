@@ -89,10 +89,27 @@ exports.updateSection = async (req, res) => {
 exports.deleteSection = async (req, res) => {
 	try {
 		//get ID- we are sending id in params
-		const {sectionId}=req.params;
+		const {sectionId,courseId}=req.body;
+		if(!sectionId || !courseId){
+			return res.status(400).json({
+				success: false,
+				message: "Missing properties",
+			});
+		}
 		//use findbyid and delete
 		await Section.findByIdAndDelete(sectionId);
-		//Do we need to delete it from course also??
+		//Do we need to delete it from course also??Yes
+		await Course.findByIdAndUpdate(
+			courseId,
+			{
+				$pull: {
+					courseContent: sectionId,
+				},
+			},
+			{
+				returnDocument: "after",
+			}
+		);
 		//return response
 		res.status(200).json({
 			success: true,
