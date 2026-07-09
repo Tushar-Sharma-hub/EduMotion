@@ -1,6 +1,6 @@
-# StudyNotion
+# EduMotion
 
-StudyNotion is a modern full-stack ed-tech platform built with the MERN stack that enables users to create, browse, enroll in, and review courses. It offers a smooth experience for both students and instructors, with features such as authentication, course management, payment processing, and rich media support.
+EduMotion is a modern full-stack ed-tech platform built with the MERN stack that enables users to create, browse, enroll in, and review courses. It offers a smooth experience for both students and instructors, with features such as authentication, course management, payment processing, and rich media support.
 
 ## ✨ Features
 
