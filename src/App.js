@@ -42,6 +42,7 @@ function App() {
     <Navbar/>
     <Routes>
       <Route path="/" element={<Home/>} />
+      <Route path="catalog" element={<Catalog/>} />
       <Route path="catalog/:catalogName" element={<Catalog/>} />
       <Route path="courses/:courseId" element={<CourseDetails/>} />
       

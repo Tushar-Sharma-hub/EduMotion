@@ -20,10 +20,16 @@ const Catalog = () => {
     //Fetch all categories
     useEffect(()=> {
         const getCategories = async() => {
-            const res = await apiConnector("GET", categories.CATEGORIES_API);
-            const category_id = 
-            res?.data?.data?.filter((ct) => ct.name.split(" ").join("-").toLowerCase() === catalogName)[0]._id;
-            setCategoryId(category_id);
+            try {
+                const res = await apiConnector("GET", categories.CATEGORIES_API);
+                const matchingCategory = res?.data?.data?.find(
+                    (ct) => ct.name.split(" ").join("-").toLowerCase() === catalogName
+                );
+                setCategoryId(matchingCategory?._id || "");
+            } catch (error) {
+                console.log(error);
+                setCategoryId("");
+            }
         }
         getCategories();
     },[catalogName]);
@@ -46,14 +52,14 @@ const Catalog = () => {
     },[categoryId]);
 
 
-    if (loading || !catalogPageData) {
+    if (loading || (!catalogPageData && categoryId)) {
         return (
           <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center">
             <div className="spinner"></div>
           </div>
         )
       }
-      if (!loading && !catalogPageData.success) {
+      if (!loading && catalogPageData && !catalogPageData.success) {
         return <Error />
       }
     

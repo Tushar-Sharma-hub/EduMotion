@@ -14,7 +14,7 @@ const {
   RESETPASSWORD_API,
 } = endpoints
 
-export function sendOtp(email, navigate) {
+export function sendOtp(email, navigate = null) {
   return async (dispatch) => {
     const toastId = toast.loading("Loading...")
     dispatch(setLoading(true))
@@ -32,7 +32,9 @@ export function sendOtp(email, navigate) {
       }
 
       toast.success("OTP Sent Successfully")
-      navigate("/verify-email")
+      if (navigate) {
+        navigate("/verify-email")
+      }
     } catch (error) {
       console.log("SENDOTP API ERROR............", error)
       toast.error("Could Not Send OTP")
