@@ -79,13 +79,7 @@ export default function SubSectionModal({
     setLoading(true)
     const result = await updateSubSection(formData, token)
     if (result) {
-      // console.log("result", result)
-      // update the structure of course
-      const updatedCourseContent = course.courseContent.map((section) =>
-        section._id === modalData.sectionId ? result : section
-      )
-      const updatedCourse = { ...course, courseContent: updatedCourseContent }
-      dispatch(setCourse(updatedCourse))
+      dispatch(setCourse(result))
     }
     setModalData(null)
     setLoading(false)
@@ -112,12 +106,7 @@ export default function SubSectionModal({
     setLoading(true)
     const result = await createSubSection(formData, token)
     if (result) {
-      // update the structure of course
-      const updatedCourseContent = course.courseContent.map((section) =>
-        section._id === modalData ? result : section
-      )
-      const updatedCourse = { ...course, courseContent: updatedCourseContent }
-      dispatch(setCourse(updatedCourse))
+      dispatch(setCourse(result))
     }
     setModalData(null)
     setLoading(false)

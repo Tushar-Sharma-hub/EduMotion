@@ -57,24 +57,35 @@ exports.createSection = async (req, res) => {
 exports.updateSection = async (req, res) => {
 	try {
 		//data input
-		const {sectionName,sectionId}=req.body;
+		const { sectionName, sectionId, courseId } = req.body
 		//data validation
-		if(!sectionName || !sectionId){
+		if (!sectionName || !sectionId || !courseId) {
 			return res.status(400).json({
 				success: false,
 				message: "Missing properties",
-			});
+			})
 		}
 		//update data
-		const section = await Section.findByIdAndUpdate(
+		await Section.findByIdAndUpdate(
 			sectionId,
-			{sectionName},
-			{new:true}
-		);
-		//return res
+			{ sectionName },
+			{ new: true }
+		)
+
+		const updatedCourse = await Course.findById(req.body.courseId)
+			.populate({
+				path: "courseContent",
+				populate: {
+					path: "subSection",
+				},
+			})
+			.exec();
+
+		//return updated course
 		res.status(200).json({
 			success: true,
-			message: "Section updated successfully"
+			message: "Section updated successfully",
+			data: updatedCourse,
 		});
 	} catch (error) {
 		console.error("Error updating section:", error);
@@ -98,8 +109,8 @@ exports.deleteSection = async (req, res) => {
 		}
 		//use findbyid and delete
 		await Section.findByIdAndDelete(sectionId);
-		//Do we need to delete it from course also??Yes
-		await Course.findByIdAndUpdate(
+		//Remove reference from course content and return updated course
+		const updatedCourse = await Course.findByIdAndUpdate(
 			courseId,
 			{
 				$pull: {
@@ -107,13 +118,21 @@ exports.deleteSection = async (req, res) => {
 				},
 			},
 			{
-				returnDocument: "after",
+				new: true,
 			}
-		);
+		)
+			.populate({
+				path: "courseContent",
+				populate: {
+					path: "subSection",
+				},
+			})
+			.exec();
 		//return response
 		res.status(200).json({
 			success: true,
-			message: "Section deleted successfully"
+			message: "Section deleted successfully",
+			data: updatedCourse,
 		});
 	} catch (error) {
 		console.error("Error deleting section:", error);

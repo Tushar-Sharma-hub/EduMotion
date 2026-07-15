@@ -143,7 +143,7 @@ exports.editCourse = async (req, res) => {
     }
 
     // If Thumbnail Image is found, update it
-    if (req.files) {
+    if (req.files?.thumbnailImage) {
       console.log("thumbnail update")
       const thumbnail = req.files.thumbnailImage
       const thumbnailImage = await uploadToCloudinary(
@@ -153,13 +153,17 @@ exports.editCourse = async (req, res) => {
       course.thumbnail = thumbnailImage.secure_url
     }
 
+    // Remove helper fields that should not become course properties
+    const updatesCopy = { ...updates }
+    delete updatesCopy.courseId
+
     // Update only the fields that are present in the request body
-    for (const key in updates) {
-      if (updates.hasOwnProperty(key)) {
+    for (const key in updatesCopy) {
+      if (updatesCopy.hasOwnProperty(key)) {
         if (key === "tag" || key === "instructions") {
-          course[key] = JSON.parse(updates[key])
+          course[key] = JSON.parse(updatesCopy[key])
         } else {
-          course[key] = updates[key]
+          course[key] = updatesCopy[key]
         }
       }
     }
