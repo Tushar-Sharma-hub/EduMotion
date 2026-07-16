@@ -76,8 +76,7 @@ exports.signup = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10)
 
     // Create the user
-    let approved = ""
-    approved === "Instructor" ? (approved = false) : (approved = true)
+    const approved = accountType === "Instructor" ? false : true
 
     // Create the Additional Profile For User
     const profileDetails = await Profile.create({

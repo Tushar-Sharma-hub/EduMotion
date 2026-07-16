@@ -1,7 +1,8 @@
 //This will send a url to reset password in mail.
-const User=require("../models/User");
-const mailSender=require("../util/mailSender");
-const bcrypt=require("bcrypt");
+const User = require("../models/User")
+const mailSender = require("../util/mailSender")
+const bcrypt = require("bcrypt")
+const crypto = require("crypto")
 
 //resetpasswordtoken - generate token , add token in user, make url using token , mail url 
 exports.resetPasswordToken=async(req,res)=>{
@@ -47,8 +48,8 @@ exports.resetPassword = async(req,res)=>{
         //data fetch
         const {password,confirmPassword,token}=req.body;
         //valdiation
-        if(password!=confirmPassword){
-            return res.json({
+        if(password !== confirmPassword){
+            return res.status(400).json({
                 success:false,
                 message:"Confirm password is not same as password.",
             });

@@ -58,11 +58,8 @@ function CourseDetails() {
   // const [collapse, setCollapse] = useState("")
   const [isActive, setIsActive] = useState(Array(0))
   const handleActive = (id) => {
-    // console.log("called", id)
-    setIsActive(
-      !isActive.includes(id)
-        ? isActive.concat([id])
-        : isActive.filter((e) => e != id)
+    setIsActive((prev) =>
+      prev.includes(id) ? prev.filter((e) => e !== id) : prev.concat([id])
     )
   }
 
@@ -88,7 +85,6 @@ function CourseDetails() {
   }
 
   const {
-    _id: course_id,
     courseName,
     courseDescription,
     thumbnail,

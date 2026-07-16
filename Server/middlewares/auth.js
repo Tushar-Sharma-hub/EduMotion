@@ -3,23 +3,32 @@ require("dotenv").config();
 const User = require("../models/User");
 
 //auth
-exports.auth=async(req,res,next)=>{
-    try{
-        const token=req.cookies.token || req.body.token || req.header("Authorization").replace("Bearer ","");
-        if(!token){
-            return res.status(401).json({success:false, message:"Token not found"});
-        }
-        try{
-            const decode=jwt.verify(token,process.env.JWT_SECRET);
-            console.log(decode);
-            req.user=decode;
-        }catch(error){
-            return res.status(400).json({success:false , message:"token is invalid"});
-        }
-        next();
-    }catch(error){
-        return res.status(400).json({success:false , message:"Something went wrong during authorization."});
+exports.auth = async (req, res, next) => {
+  try {
+    const authHeader = req.header("Authorization") || req.header("authorization")
+    const tokenFromHeader = authHeader?.startsWith("Bearer ")
+      ? authHeader.slice(7).trim()
+      : null
+    const token = req.cookies?.token || req.body?.token || tokenFromHeader
+
+    if (!token) {
+      return res.status(401).json({ success: false, message: "Token not found" })
     }
+
+    try {
+      const decode = jwt.verify(token, process.env.JWT_SECRET)
+      req.user = decode
+    } catch (error) {
+      return res.status(401).json({ success: false, message: "token is invalid" })
+    }
+
+    next()
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong during authorization.",
+    })
+  }
 }
 
 //isStudent
