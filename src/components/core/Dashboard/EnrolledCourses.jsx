@@ -68,9 +68,9 @@ export default function EnrolledCourses() {
                 <div className="flex max-w-xs flex-col gap-2">
                   <p className="font-semibold">{course.courseName}</p>
                   <p className="text-xs text-richblack-300">
-                    {course.courseDescription.length > 50
+                    {course.courseDescription && course.courseDescription.length > 50
                       ? `${course.courseDescription.slice(0, 50)}...`
-                      : course.courseDescription}
+                      : course.courseDescription || ""}
                   </p>
                 </div>
               </div>

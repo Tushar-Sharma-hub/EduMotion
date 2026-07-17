@@ -9,7 +9,7 @@ export default function Instructor() {
     const { token } = useSelector((state) => state.auth)
     const { user } = useSelector((state) => state.profile)
     const [loading, setLoading] = useState(false)
-    const [instructorData, setInstructorData] = useState(null)
+    const [instructorData, setInstructorData] = useState([])
     const [courses, setCourses] = useState([])
   
     useEffect(() => {
@@ -18,7 +18,9 @@ export default function Instructor() {
         const instructorApiData = await getInstructorData(token)
         const result = await fetchInstructorCourses(token)
         console.log(instructorApiData)
-        if (instructorApiData.length) setInstructorData(instructorApiData)
+        if (instructorApiData) {
+          setInstructorData(instructorApiData)
+        }
         if (result) {
           setCourses(result)
         }
@@ -27,14 +29,14 @@ export default function Instructor() {
     }, [])
   
     const totalAmount = instructorData?.reduce(
-      (acc, curr) => acc + curr.totalAmountGenerated,
+      (acc, curr) => acc + (curr.totalAmountGenerated || 0),
       0
-    )
+    ) || 0
   
     const totalStudents = instructorData?.reduce(
-      (acc, curr) => acc + curr.totalStudentsEnrolled,
+      (acc, curr) => acc + (curr.totalStudentsEnrolled || 0),
       0
-    )
+    ) || 0
   
     return (
       <div>
@@ -109,7 +111,7 @@ export default function Instructor() {
                       </p>
                       <div className="mt-1 flex items-center space-x-2">
                         <p className="text-xs font-medium text-richblack-300">
-                          {course.studentsEnroled.length} students
+                          {course.studentsEnrolled?.length || 0} students
                         </p>
                         <p className="text-xs font-medium text-richblack-300">
                           |

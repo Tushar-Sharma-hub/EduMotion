@@ -160,47 +160,72 @@ exports.getEnrolledCourses = async (req, res) => {
         },
       })
       .exec()
+
+    if (!userDetails) {
+      return res.status(404).json({
+        success: false,
+        message: `Could not find user with id: ${userId}`,
+      })
+    }
+
     userDetails = userDetails.toObject()
-    var SubsectionLength = 0
-    for (var i = 0; i < userDetails.courses.length; i++) {
-      let totalDurationInSeconds = 0
-      SubsectionLength = 0
-      for (var j = 0; j < userDetails.courses[i].courseContent.length; j++) {
-        totalDurationInSeconds += userDetails.courses[i].courseContent[
-          j
-        ].subSection.reduce((acc, curr) => acc + parseInt(curr.timeDuration), 0)
+
+    if (userDetails.courses) {
+      // Filter out any null/deleted courses
+      userDetails.courses = userDetails.courses.filter((course) => course !== null)
+
+      for (var i = 0; i < userDetails.courses.length; i++) {
+        let totalDurationInSeconds = 0
+        let SubsectionLength = 0
+        
+        // Filter out null/deleted courseContent sections
+        if (userDetails.courses[i].courseContent) {
+          userDetails.courses[i].courseContent = userDetails.courses[i].courseContent.filter(
+            (content) => content !== null
+          )
+
+          for (var j = 0; j < userDetails.courses[i].courseContent.length; j++) {
+            const section = userDetails.courses[i].courseContent[j]
+            
+            // Filter out null/deleted subSections
+            if (section.subSection) {
+              section.subSection = section.subSection.filter((sub) => sub !== null)
+
+              totalDurationInSeconds += section.subSection.reduce(
+                (acc, curr) => acc + parseInt(curr.timeDuration || 0),
+                0
+              )
+              SubsectionLength += section.subSection.length
+            }
+          }
+        }
+
         userDetails.courses[i].totalDuration = convertSecondsToDuration(
           totalDurationInSeconds
         )
-        SubsectionLength +=
-          userDetails.courses[i].courseContent[j].subSection.length
-      }
-      let courseProgressCount = await CourseProgress.findOne({
-        courseId: userDetails.courses[i]._id,
-        userId: userId,
-      })
-      courseProgressCount = courseProgressCount?.completedVideos.length
-      if (SubsectionLength === 0) {
-        userDetails.courses[i].progressPercentage = 100
-      } else {
-        // To make it up to 2 decimal point
-        const multiplier = Math.pow(10, 2)
-        userDetails.courses[i].progressPercentage =
-          Math.round(
-            (courseProgressCount / SubsectionLength) * 100 * multiplier
-          ) / multiplier
+
+        let courseProgressCount = await CourseProgress.findOne({
+          courseId: userDetails.courses[i]._id,
+          userId: userId,
+        })
+        courseProgressCount = courseProgressCount?.completedVideos?.length || 0
+
+        if (SubsectionLength === 0) {
+          userDetails.courses[i].progressPercentage = 100
+        } else {
+          // To make it up to 2 decimal point
+          const multiplier = Math.pow(10, 2)
+          userDetails.courses[i].progressPercentage =
+            Math.round(
+              (courseProgressCount / SubsectionLength) * 100 * multiplier
+            ) / multiplier
+        }
       }
     }
 
-    if (!userDetails) {
-      return res.status(400).json({
-        success: false,
-        message: `Could not find user with id: ${userDetails}`,
-      })
-    }
     return res.status(200).json({
       success: true,
-      data: userDetails.courses,
+      data: userDetails.courses || [],
     })
   } catch (error) {
     return res.status(500).json({
@@ -215,8 +240,8 @@ exports.instructorDashboard = async (req, res) => {
     const courseDetails = await Course.find({ instructor: req.user.id })
 
     const courseData = courseDetails.map((course) => {
-      const totalStudentsEnrolled = course.studentsEnrolled.length
-      const totalAmountGenerated = totalStudentsEnrolled * course.price
+      const totalStudentsEnrolled = course.studentsEnrolled?.length || 0
+      const totalAmountGenerated = totalStudentsEnrolled * (course.price || 0)
 
       // Create a new object with the additional fields
       const courseDataWithStats = {
