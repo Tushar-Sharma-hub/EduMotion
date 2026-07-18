@@ -1,12 +1,14 @@
 {
   "files": {
-    "main.css": "/static/css/main.9b2d6e98.css",
-    "main.js": "/static/js/main.78ee6ebc.js",
+    "main.css": "/static/css/main.79dd6521.css",
+    "main.js": "/static/js/main.828d112f.js",
     "static/media/banner.mp4": "/static/media/banner.8e687823b1422880cc3f.mp4",
-    "static/media/logo.png": "/static/media/logo.00e3d7ca68a03abbe40c.png",
+    "static/media/logo.png": "/static/media/logo.af6fdc068e5f53504400.png",
     "static/media/TimelineImage.png": "/static/media/TimelineImage.a610b1e5d891ac77fe93.png",
     "static/media/Instructor.png": "/static/media/Instructor.8b4c4f204053f0dfe844.png",
+    "static/media/logo_icon.png": "/static/media/logo_icon.9e8dd7911348d5b1438b.png",
     "static/media/FoundingStory.png": "/static/media/FoundingStory.84f2828a5f4a9c08a802.png",
+    "static/media/logo_text.png": "/static/media/logo_text.0bc9ff732381458d4f87.png",
     "static/media/Plan_your_lessons.svg": "/static/media/Plan_your_lessons.f123ccf442a2a364a459a7bbec807045.svg",
     "static/media/Compare_with_others.svg": "/static/media/Compare_with_others.8e950efa990d53f34b35893a1e03cea1.svg",
     "static/media/bghome.svg": "/static/media/bghome.de04eae287ff1d29f0b1.svg",
@@ -22,11 +24,11 @@
     "static/media/Logo3.svg": "/static/media/Logo3.0a56f78fead602f0d54c55ddcdf7e616.svg",
     "static/media/Logo4.svg": "/static/media/Logo4.5da4c6e0c53e6745b25529891ef82458.svg",
     "index.html": "/index.html",
-    "main.9b2d6e98.css.map": "/static/css/main.9b2d6e98.css.map",
-    "main.78ee6ebc.js.map": "/static/js/main.78ee6ebc.js.map"
+    "main.79dd6521.css.map": "/static/css/main.79dd6521.css.map",
+    "main.828d112f.js.map": "/static/js/main.828d112f.js.map"
   },
   "entrypoints": [
-    "static/css/main.9b2d6e98.css",
-    "static/js/main.78ee6ebc.js"
+    "static/css/main.79dd6521.css",
+    "static/js/main.828d112f.js"
   ]
 }
