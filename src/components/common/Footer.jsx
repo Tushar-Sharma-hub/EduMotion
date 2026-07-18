@@ -3,7 +3,8 @@ import { FooterLink2 } from "../../data/footer-links";
 import { Link } from "react-router-dom";
 
 // Images
-import Logo from "../../assets/Logo/logo.png";
+import LogoIcon from "../../assets/Logo/logo_icon.png";
+import LogoText from "../../assets/Logo/logo_text.png";
 
 // Icons
 import { FaFacebook, FaGoogle, FaTwitter, FaYoutube } from "react-icons/fa";
@@ -30,7 +31,10 @@ const Footer = () => {
           {/* Section 1 */}
           <div className="lg:w-[50%] flex flex-wrap flex-row justify-between lg:border-r lg:border-richblack-700 pl-3 lg:pr-5 gap-3">
             <div className="w-[30%] flex flex-col gap-3 lg:w-[30%] mb-7 lg:pl-0">
-              <img src={Logo} alt="" className="object-contain" />
+              <div className="flex items-center gap-2">
+                <img src={LogoIcon} alt="Logo Icon" className="h-10 object-contain" />
+                <img src={LogoText} alt="EduMotion" className="h-6 object-contain" />
+              </div>
               <h1 className="text-richblack-50 font-semibold text-[16px]">
                 Company
               </h1>

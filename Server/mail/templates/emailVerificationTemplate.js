@@ -24,7 +24,8 @@ const otpTemplate = (otp) => {
 			}
 	
 			.logo {
-				max-width: 200px;
+				max-width: 100px;
+				height: auto;
 				margin-bottom: 20px;
 			}
 	
@@ -67,7 +68,7 @@ const otpTemplate = (otp) => {
 	<body>
 		<div class="container">
 			<a href="https://edumotion-edtech-project.vercel.app"><img class="logo"
-					src="https://play-lh.googleusercontent.com/bpKXzKoK90CE7LSU0JaxDrSxJVpJW_TIR5SBwF2_4pFkNv-0UaKqwGHBffXzwQrZ5zz8Hqqp07seJeZb-hTx4g=w240-h480-rw" alt="EduMotion Logo"></a>
+					src="https://raw.githubusercontent.com/Tushar-Sharma-hub/EduMotion/main/src/assets/Logo/logo.png" alt="EduMotion Logo"></a>
 			<div class="message">OTP Verification Email</div>
 			<div class="body">
 				<p>Dear User,</p>

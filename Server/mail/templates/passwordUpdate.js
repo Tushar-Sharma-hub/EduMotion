@@ -25,7 +25,8 @@ exports.passwordUpdated = (email, name) => {
             }
     
             .logo {
-                max-width: 200px;
+                max-width: 100px;
+                height: auto;
                 margin-bottom: 20px;
             }
     
@@ -56,7 +57,7 @@ exports.passwordUpdated = (email, name) => {
     <body>
         <div class="container">
             <a href="https://edumotion-edtech-project.vercel.app"><img class="logo"
-                    src="https://i.ibb.co/7Xyj3PC/logo.png" alt="EduMotion Logo"></a>
+                    src="https://raw.githubusercontent.com/Tushar-Sharma-hub/EduMotion/main/src/assets/Logo/logo.png" alt="EduMotion Logo"></a>
             <div class="message">Password Update Confirmation</div>
             <div class="body">
                 <p>Hey ${name},</p>

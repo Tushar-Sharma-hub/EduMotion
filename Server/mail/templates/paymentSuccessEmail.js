@@ -25,7 +25,8 @@ exports.paymentSuccessEmail = (name, amount, orderId, paymentId) => {
               }
       
               .logo {
-                  max-width: 200px;
+                  max-width: 100px;
+                  height: auto;
                   margin-bottom: 20px;
               }
       
@@ -67,7 +68,7 @@ exports.paymentSuccessEmail = (name, amount, orderId, paymentId) => {
       
       <body>
           <div class="container">
-              <a href="https://edumotion-edtech-project.vercel.app"><img class="logo" src="https://i.ibb.co/7Xyj3PC/logo.png"
+              <a href="https://edumotion-edtech-project.vercel.app"><img class="logo" src="https://raw.githubusercontent.com/Tushar-Sharma-hub/EduMotion/main/src/assets/Logo/logo.png"
                       alt="EduMotion Logo"></a>
               <div class="message">Course Payment Confirmation</div>
               <div class="body">

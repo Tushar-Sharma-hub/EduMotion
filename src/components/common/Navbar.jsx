@@ -4,7 +4,8 @@ import { BsChevronDown } from "react-icons/bs"
 import { useSelector } from "react-redux"
 import { Link, matchPath, useLocation } from "react-router-dom"
 
-import logo from "../../assets/Logo/logo.png"
+import logoIcon from "../../assets/Logo/logo_icon.png"
+import logoText from "../../assets/Logo/logo_text.png"
 import { NavbarLinks } from "../../data/navbar-links"
 import { apiConnector } from "../../services/apiconnector"
 import { categories } from "../../services/apis"
@@ -48,7 +49,10 @@ function Navbar() {
       <div className="flex w-11/12 max-w-maxContent items-center justify-between">
         {/* Logo */}
         <Link to="/">
-          <img src={logo} alt="Logo" width={160} height={32} loading="lazy" />
+          <div className="flex items-center gap-2">
+            <img src={logoIcon} alt="Logo Icon" className="h-10 object-contain" loading="lazy" />
+            <img src={logoText} alt="EduMotion" className="h-6 object-contain" loading="lazy" />
+          </div>
         </Link>
         {/* Navigation links */}
         <nav className="hidden md:block">
