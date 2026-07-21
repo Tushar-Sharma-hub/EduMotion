@@ -37,6 +37,16 @@ export default function Instructor() {
       (acc, curr) => acc + (curr.totalStudentsEnrolled || 0),
       0
     ) || 0
+
+    // Additional Stats
+    const bestSellingCourse = instructorData?.reduce(
+      (prev, curr) => ((curr.totalStudentsEnrolled || 0) > (prev?.totalStudentsEnrolled || 0)) ? curr : prev,
+      instructorData[0]
+    )
+
+    const avgPrice = courses.length > 0
+      ? (courses.reduce((acc, curr) => acc + (curr.price || 0), 0) / courses.length).toFixed(0)
+      : 0;
   
     return (
       <div>
@@ -65,27 +75,44 @@ export default function Instructor() {
                 </div>
               )}
               {/* Total Statistics */}
-              <div className="flex min-w-[250px] flex-col rounded-md bg-richblack-800 p-6">
+              <div className="flex min-w-[260px] flex-col rounded-md bg-richblack-800 p-6">
                 <p className="text-lg font-bold text-richblack-5">Statistics</p>
                 <div className="mt-4 space-y-4">
                   <div>
-                    <p className="text-lg text-richblack-200">Total Courses</p>
+                    <p className="text-sm text-richblack-300">Total Courses</p>
                     <p className="text-3xl font-semibold text-richblack-50">
                       {courses.length}
                     </p>
                   </div>
                   <div>
-                    <p className="text-lg text-richblack-200">Total Students</p>
+                    <p className="text-sm text-richblack-300">Total Students</p>
                     <p className="text-3xl font-semibold text-richblack-50">
                       {totalStudents}
                     </p>
                   </div>
                   <div>
-                    <p className="text-lg text-richblack-200">Total Income</p>
+                    <p className="text-sm text-richblack-300">Total Income</p>
                     <p className="text-3xl font-semibold text-richblack-50">
                       Rs. {totalAmount}
                     </p>
                   </div>
+                  <div>
+                    <p className="text-sm text-richblack-300">Avg Course Price</p>
+                    <p className="text-2xl font-semibold text-richblack-50">
+                      Rs. {avgPrice}
+                    </p>
+                  </div>
+                  {bestSellingCourse && (
+                    <div className="border-t border-richblack-700 pt-3">
+                      <p className="text-sm text-richblack-300">Best Seller</p>
+                      <p className="text-sm font-semibold text-yellow-50 truncate max-w-[200px]" title={bestSellingCourse.courseName}>
+                        {bestSellingCourse.courseName}
+                      </p>
+                      <p className="text-xs text-richblack-400">
+                        ({bestSellingCourse.totalStudentsEnrolled} students)
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -97,28 +124,32 @@ export default function Instructor() {
                   <p className="text-xs font-semibold text-yellow-50">View All</p>
                 </Link>
               </div>
-              <div className="my-4 flex items-start space-x-6">
+              <div className="my-4 flex items-stretch space-x-6">
                 {courses.slice(0, 3).map((course) => (
-                  <div key={course._id} className="w-1/3">
-                    <img
-                      src={course.thumbnail}
-                      alt={course.courseName}
-                      className="h-[201px] w-full rounded-md object-cover"
-                    />
-                    <div className="mt-3 w-full">
-                      <p className="text-sm font-medium text-richblack-50">
-                        {course.courseName}
-                      </p>
-                      <div className="mt-1 flex items-center space-x-2">
-                        <p className="text-xs font-medium text-richblack-300">
-                          {course.studentsEnrolled?.length || 0} students
+                  <div key={course._id} className="group flex w-1/3 flex-col rounded-lg bg-richblack-900 p-4 transition-all duration-200 hover:scale-[1.02] hover:shadow-richblack-700 hover:shadow-md">
+                    <div className="overflow-hidden rounded-md">
+                      <img
+                        src={course.thumbnail}
+                        alt={course.courseName}
+                        className="h-[180px] w-full rounded-md object-cover transition-all duration-300 group-hover:scale-105"
+                      />
+                    </div>
+                    <div className="mt-3 flex flex-1 flex-col justify-between">
+                      <div>
+                        <p className="text-sm font-semibold text-richblack-50 group-hover:text-yellow-50 transition-colors duration-200 line-clamp-2">
+                          {course.courseName}
                         </p>
-                        <p className="text-xs font-medium text-richblack-300">
-                          |
+                        <p className="mt-1 text-xs text-richblack-300">
+                          {course.studentsEnrolled?.length || 0} students enrolled
                         </p>
-                        <p className="text-xs font-medium text-richblack-300">
-                          Rs. {course.price}
-                        </p>
+                      </div>
+                      <div className="mt-4 flex items-center justify-between border-t border-richblack-800 pt-2">
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
+                          course.status === "Published" ? "bg-[#005B41] text-[#00FFAB]" : "bg-[#5B0017] text-[#FF004D]"
+                        }`}>
+                          {course.status || "Draft"}
+                        </span>
+                        <p className="text-sm font-semibold text-yellow-50">Rs. {course.price}</p>
                       </div>
                     </div>
                   </div>

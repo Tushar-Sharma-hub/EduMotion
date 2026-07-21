@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Chart, registerables } from "chart.js"
-import { Pie } from "react-chartjs-2"
+import { Pie, Bar } from "react-chartjs-2"
 
 Chart.register(...registerables)
 
@@ -42,15 +42,88 @@ export default function InstructorChart({ courses }) {
     ],
   }
 
-  // Options for the chart
-  const options = {
+  const [chartType, setChartType] = useState("bar")
+
+  // Options for the bar chart
+  const barOptions = {
     maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+    scales: {
+      x: {
+        grid: {
+          color: 'rgba(255, 255, 255, 0.08)',
+        },
+        ticks: {
+          color: '#C5C7D4', // richblack-300
+          font: {
+            family: 'Inter',
+            size: 10
+          }
+        }
+      },
+      y: {
+        grid: {
+          color: 'rgba(255, 255, 255, 0.08)',
+        },
+        ticks: {
+          color: '#C5C7D4',
+          font: {
+            family: 'Inter',
+            size: 10
+          }
+        }
+      }
+    }
+  }
+
+  // Options for the pie chart
+  const pieOptions = {
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'right',
+        labels: {
+          color: '#C5C7D4',
+          font: {
+            family: 'Inter',
+            size: 10
+          },
+          boxWidth: 12
+        }
+      }
+    }
   }
 
   return (
     <div className="flex flex-1 flex-col gap-y-4 rounded-md bg-richblack-800 p-6">
-      <p className="text-lg font-bold text-richblack-5">Visualize</p>
-      <div className="space-x-4 font-semibold">
+      <div className="flex items-center justify-between">
+        <p className="text-lg font-bold text-richblack-5">Visualize</p>
+        {/* Toggle between Bar and Pie charts */}
+        <div className="flex items-center gap-x-2 rounded-md bg-richblack-900 p-1 text-xs font-semibold text-richblack-300">
+          <button
+            onClick={() => setChartType("bar")}
+            className={`px-3 py-1.5 rounded transition-all duration-200 ${
+              chartType === "bar" ? "bg-richblack-700 text-yellow-50" : "hover:text-richblack-50"
+            }`}
+          >
+            Bar
+          </button>
+          <button
+            onClick={() => setChartType("pie")}
+            className={`px-3 py-1.5 rounded transition-all duration-200 ${
+              chartType === "pie" ? "bg-richblack-700 text-yellow-50" : "hover:text-richblack-50"
+            }`}
+          >
+            Pie
+          </button>
+        </div>
+      </div>
+
+      <div className="flex gap-x-4 font-semibold text-sm">
         {/* Button to switch to the "students" chart */}
         <button
           onClick={() => setCurrChart("students")}
@@ -74,12 +147,22 @@ export default function InstructorChart({ courses }) {
           Income
         </button>
       </div>
-      <div className="relative mx-auto aspect-square h-full w-full">
-        {/* Render the Pie chart based on the selected chart */}
-        <Pie
-          data={currChart === "students" ? chartDataStudents : chartIncomeData}
-          options={options}
-        />
+
+      {/* Render the selected chart type with constrained height */}
+      <div className="relative mx-auto h-[280px] w-full mt-2">
+        {chartType === "pie" ? (
+          <div className="h-full w-full max-w-[380px] mx-auto">
+            <Pie
+              data={currChart === "students" ? chartDataStudents : chartIncomeData}
+              options={pieOptions}
+            />
+          </div>
+        ) : (
+          <Bar
+            data={currChart === "students" ? chartDataStudents : chartIncomeData}
+            options={barOptions}
+          />
+        )}
       </div>
     </div>
   )
