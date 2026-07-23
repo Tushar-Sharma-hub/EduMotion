@@ -4,6 +4,7 @@ exports.passwordUpdated = (email, name) => {
     
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Password Update Confirmation</title>
         <style>
             body {
@@ -49,6 +50,19 @@ exports.passwordUpdated = (email, name) => {
     
             .highlight {
                 font-weight: bold;
+            }
+
+            @media (max-width: 600px) {
+                .container {
+                    width: 100% !important;
+                    padding: 15px !important;
+                }
+                .message {
+                    font-size: 16px !important;
+                }
+                .body {
+                    font-size: 14px !important;
+                }
             }
         </style>
     

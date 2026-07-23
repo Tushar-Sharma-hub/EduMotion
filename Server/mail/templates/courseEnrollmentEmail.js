@@ -4,6 +4,7 @@ exports.courseEnrollmentEmail = (courseName, name) => {
 
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Course Registration Confirmation</title>
         <style>
             body {
@@ -61,6 +62,23 @@ exports.courseEnrollmentEmail = (courseName, name) => {
 
             .highlight {
                 font-weight: bold;
+            }
+
+            @media (max-width: 600px) {
+                .container {
+                    width: 100% !important;
+                    padding: 15px !important;
+                }
+                .message {
+                    font-size: 16px !important;
+                }
+                .body {
+                    font-size: 14px !important;
+                }
+                .cta {
+                    padding: 8px 16px !important;
+                    font-size: 14px !important;
+                }
             }
         </style>
 
